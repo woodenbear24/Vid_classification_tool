@@ -13,12 +13,12 @@ class Test(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # UI
-
+        # UI Load
         ui_file = QtCore.QFile("main.ui")
 
         loader = QtUiTools.QUiLoader()
         self.ui = loader.load(ui_file, self)
+        print(ui_file)
         ui_file.close()   
 
         # UI
@@ -30,11 +30,13 @@ class Test(QtWidgets.QMainWindow):
         self.up_dir_button = self.findChild(QtWidgets.QToolButton, 'up_dir_button')
         self.author_list = self.findChild(QtWidgets.QListWidget, 'author_list')
         self.tag_list = self.findChild(QtWidgets.QListWidget, 'tag_list')
+
+        self.tag_display_box = self.findChild(QtWidgets.QTextBrowser, 'tag_display_box')
+
         self.reload_tags_button = self.findChild(QtWidgets.QToolButton, "reload_tags_button")
         self.tag_config_button = self.findChild(QtWidgets.QToolButton, "tag_config_button")
         self.write_tag = self.findChild(QtWidgets.QPushButton, 'write_tag')
         self.clear_tag_button = self.findChild(QtWidgets.QToolButton, 'clear_tag_button')
-
         # Media
 
 
@@ -49,7 +51,6 @@ class Test(QtWidgets.QMainWindow):
         self.tag_list.itemClicked.connect(self.tag_selected)
         self.write_tag.clicked.connect(self.tag_mod)
         self.clear_tag_button.clicked.connect(self.tag_clear)
-
 
 
         # initialization
@@ -121,7 +122,7 @@ class Test(QtWidgets.QMainWindow):
         print("tags loaded")
     
     def tag_set(self):
-        dialog = SetTagDialog(self)
+        dialog = SetTagDialog()
         dialog.exec()
         self.load_tags()
 
@@ -161,7 +162,7 @@ class Test(QtWidgets.QMainWindow):
             print(vid_metadata_text)
             vid_metadata_text = vid_metadata_text.replace("\xa9ART","Author").replace("\xa9cmt","Tag")
             print(vid_metadata_text)
-            self.tagdisplay.setText(vid_metadata_text)
+            self.tag_display_box.setText(vid_metadata_text)
         except:pass
 
     def tag_mod(self):

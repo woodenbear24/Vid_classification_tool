@@ -133,7 +133,7 @@
      <item>
       <layout class="QVBoxLayout" name="right_vertical">
        <item>
-        <widget class="QTextBrowser" name="tagdisplay">
+        <widget class="QTextBrowser" name="tag_display_box">
          <property name="maximumSize">
           <size>
            <width>300</width>

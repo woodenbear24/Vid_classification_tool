@@ -10,10 +10,12 @@ class SetTagDialog(QtWidgets.QDialog):
 
         loader = QtUiTools.QUiLoader()
         self.ui = loader.load(ui_file, self)
+        print(ui_file)
         ui_file.close()        
 
         self.buttonBox = self.findChild(QtWidgets.QDialogButtonBox, "buttonBox")
-
+        self.author_list = self.findChild(QtWidgets.QTextEdit, "author_list")
+        self.tag_list = self.findChild(QtWidgets.QTextEdit, "tag_list")
         self.buttonBox.accepted.connect(self.on_accepted)
         self.buttonBox.accepted.connect(self.on_rejected)
         
@@ -40,8 +42,8 @@ class SetTagDialog(QtWidgets.QDialog):
         tags = json['tag']
         authors_text = tags_text = ""
         for i in authors:
-            authors_text = authors_text + i + "\n"
+            authors_text += i + "\n"
         for i in tags:
-            tags_text = tags_text + i + "\n"
+            tags_text += i + "\n"
         self.author_list.setText(authors_text)
         self.tag_list.setText(tags_text)
