@@ -77,8 +77,10 @@ class Test(QtWidgets.QMainWindow):
                 vid_dir = full_item_path
                 print(f"Selected mp4:{vid_dir}")
                 vid_metadata=MP4(vid_dir)
-                vid_metadata['\xa9cmt'] = [""]    # tags
-                vid_metadata['\xa9ART'] = [""]    # author
+                if vid_metadata['\xa9cmt']==[]:
+                    vid_metadata['\xa9cmt'] = [""]    # tags
+                if vid_metadata['\xa9ART']==[]:
+                    vid_metadata['\xa9ART'] = [""]    # author
                 self.tag_display()
                 
 
