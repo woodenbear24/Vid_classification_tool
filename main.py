@@ -1,8 +1,9 @@
 import sys, os
 from mutagen.mp4 import MP4
 from tag_manager import *
-from dialog import *
-from PyQt6 import QtWidgets, QtMultimedia, uic
+from dialog import SetTagDialog
+from PySide6 import QtWidgets, QtMultimediaWidgets, QtCore, QtUiTools
+from PySide6.QtMultimedia import QMediaPlayer, QVideoSink
 
 vid= None
 vid_metadata = {}
@@ -11,11 +12,21 @@ vid_metadata = {}
 class Test(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi('main.ui', self)
-        # Signal
+
+        # UI
+
+        ui_file = QtCore.QFile("main.ui")
+
+        loader = QtUiTools.QUiLoader()
+        self.ui = loader.load(ui_file, self)
+        ui_file.close()   
+
+        # UI
         self.loaddir_button = self.findChild(QtWidgets.QToolButton,'loaddir_button') 
         self.dir_entry = self.findChild(QtWidgets.QLineEdit, 'dir_entry')
         self.fileList = self.findChild(QtWidgets.QListWidget, 'filelist') 
+        self.video_widget = self.findChild(QtMultimediaWidgets.QVideoWidget, "video_widget")
+        self.play_button = self.findChild(QtWidgets.QToolButton, "play_button")
         self.up_dir_button = self.findChild(QtWidgets.QToolButton, 'up_dir_button')
         self.author_list = self.findChild(QtWidgets.QListWidget, 'author_list')
         self.tag_list = self.findChild(QtWidgets.QListWidget, 'tag_list')
@@ -23,7 +34,11 @@ class Test(QtWidgets.QMainWindow):
         self.tag_config_button = self.findChild(QtWidgets.QToolButton, "tag_config_button")
         self.write_tag = self.findChild(QtWidgets.QPushButton, 'write_tag')
         self.clear_tag_button = self.findChild(QtWidgets.QToolButton, 'clear_tag_button')
-        # Connecting
+
+        # Media
+
+
+        # Signal Connecting
         self.loaddir_button.clicked.connect(self.on_button_clicked)
         self.dir_entry.textChanged.connect(self.update_file_list) 
         self.fileList.itemDoubleClicked.connect(self.handle_file_list_click) 
@@ -34,6 +49,10 @@ class Test(QtWidgets.QMainWindow):
         self.tag_list.itemClicked.connect(self.tag_selected)
         self.write_tag.clicked.connect(self.tag_mod)
         self.clear_tag_button.clicked.connect(self.tag_clear)
+
+
+
+        # initialization
         self.load_tags()
 
         
@@ -161,47 +180,6 @@ class Test(QtWidgets.QMainWindow):
             self.tag_display()
         except Exception:
             print(f"Err:{Exception}")
-
-
-# tag setting
-class SetTagDialog(QtWidgets.QDialog):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        uic.loadUi("Dialog.ui", self) 
-
-        self.buttonBox = self.findChild(QtWidgets.QDialogButtonBox, "buttonBox")
-
-        self.buttonBox.accepted.connect(self.on_accepted)
-        self.buttonBox.accepted.connect(self.on_rejected)
-        
-        self.load()
-
-    def on_accepted(self):
-        authors_text = tags_text = ""
-        authors_text = self.author_list.toPlainText()
-        tags_text = self.tag_list.toPlainText()
-        authors_array = authors_text.strip().split('\n')
-        tags_array = tags_text.strip().split('\n')
-        json = {"author":authors_array, "tag":tags_array}
-        tag_save(json)
-        print(f"Saving tags:{json}")
-        self.accept()
-
-    def on_rejected(self):
-        print("Tag Editing Aborted")
-        self.reject() 
-    
-    def load(self):
-        json = tag_load()
-        authors = json['author']
-        tags = json['tag']
-        authors_text = tags_text = ""
-        for i in authors:
-            authors_text = authors_text + i + "\n"
-        for i in tags:
-            tags_text = tags_text + i + "\n"
-        self.author_list.setText(authors_text)
-        self.tag_list.setText(tags_text)
 
 
 if __name__ == '__main__':

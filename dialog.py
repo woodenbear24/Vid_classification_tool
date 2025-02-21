@@ -1,11 +1,16 @@
-from PyQt6 import QtWidgets, uic
+from PySide6 import QtWidgets, QtCore, QtUiTools
 from tag_manager import *
 
 # tag setting
 class SetTagDialog(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        uic.loadUi("Dialog.ui", self) 
+
+        ui_file = QtCore.QFile("dialog.ui")
+
+        loader = QtUiTools.QUiLoader()
+        self.ui = loader.load(ui_file, self)
+        ui_file.close()        
 
         self.buttonBox = self.findChild(QtWidgets.QDialogButtonBox, "buttonBox")
 
