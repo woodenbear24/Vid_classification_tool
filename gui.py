@@ -74,15 +74,12 @@ class Test(QtWidgets.QMainWindow):
             elif (split_path[-1]=='.mp4'):
                 global vid_dir
                 global vid_metadata
-                vid_metadata_text = ""
                 vid_dir = full_item_path
                 print(f"Selected mp4:{vid_dir}")
                 vid_metadata=MP4(vid_dir)
                 vid_metadata['\xa9cmt'] = [""]    # tags
                 vid_metadata['\xa9ART'] = [""]    # author
-                for i in vid_metadata:
-                    vid_metadata_text = vid_metadata_text + i +" : "+vid_metadata[i][0] +"\n"
-                self.tagdisplay.setText(vid_metadata_text)
+                self.tag_display()
                 
 
     def dir_up(self):
@@ -106,13 +103,31 @@ class Test(QtWidgets.QMainWindow):
         dialog.exec()
         self.load_tags()
 
-    def author_selected(self):
+    def author_selected(self, item):
         global vid_metadata
-        pass
+        author = item.text()
+        if author in vid_metadata['\xa9cmt']:
+            vid_metadata['\xa9cmt'].remove(author)
+        else:
+            vid_metadata['\xa9cmt'].append(author)
+        self.tag_display()
 
-    def tag_selected(self):
+    def tag_selected(self, item):
         global vid_metadata
-        pass
+        tag = item.text()
+        if tag in vid_metadata['\xa9cmt']:
+            vid_metadata['\xa9cmt'].remove(tag)
+        else:
+            vid_metadata['\xa9cmt'].append(tag)
+        self.tag_display()
+
+    def tag_display(self):
+        global vid_metadata
+        vid_metadata_text = ""
+        for i in vid_metadata:
+            vid_metadata_text = vid_metadata_text + i +" : "+vid_metadata[i][0] +"\n"
+        self.tagdisplay.setText(vid_metadata_text)
+
 
 # tag setting
 class SetTagDialog(QtWidgets.QDialog):
