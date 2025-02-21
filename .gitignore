@@ -170,3 +170,5 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 proxy.bat
+test_265.mp4
+test.mp4
