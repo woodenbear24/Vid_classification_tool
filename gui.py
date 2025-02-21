@@ -1,7 +1,13 @@
 import sys, os, mutagen
+from mutagen.mp4 import MP4, MP4Tags
 from tag_manager import *
 from PyQt6 import QtWidgets, uic
 from PyQt6.QtWidgets import  QFileDialog, QDialog
+
+
+vid_dir = ""
+vid_metadata = {}
+
 # main window
 class Test(QtWidgets.QMainWindow):
     def __init__(self):
@@ -16,6 +22,7 @@ class Test(QtWidgets.QMainWindow):
         self.tag_list = self.findChild(QtWidgets.QListWidget, 'tag_list')
         self.reload_tags_button = self.findChild(QtWidgets.QToolButton, "reload_tags_button")
         self.tag_config_button = self.findChild(QtWidgets.QToolButton, "tag_config_button")
+        self.write_tag = self.findChild(QtWidgets.QPushButton, 'write_tag')
 
         #if self.LoadDir_button: 
         self.loaddir_button.clicked.connect(self.on_button_clicked)
@@ -27,6 +34,9 @@ class Test(QtWidgets.QMainWindow):
         self.up_dir_button.clicked.connect(self.dir_up)
         self.reload_tags_button.clicked.connect(self.load_tags)
         self.tag_config_button.clicked.connect(self.tag_set)
+        # self.author_list.itemDoubleClicked.connect()
+        # self.tag_list.itemDoubleClicked.connect()
+        # self.write_tag.clicked.connect()
 
 
         self.load_tags()
@@ -60,10 +70,24 @@ class Test(QtWidgets.QMainWindow):
 
         if current_dir_path: 
             full_item_path = os.path.join(current_dir_path, clicked_item_text) 
-            print(f"Clicked:{full_item_path}")
+            full_item_path = full_item_path.replace("\\","/")
+            split_path = os.path.splitext(full_item_path)
             if os.path.isdir(full_item_path): 
                 self.dir_entry.setText(full_item_path) 
                 print(f"Jumping to:{full_item_path}")
+            elif (split_path[-1]=='.mp4'):
+                global vid_dir
+                global vid_metadata
+                vid_metadata_text = ""
+                vid_dir = full_item_path
+                print(f"Selected mp4:{vid_dir}")
+                vid_metadata=MP4(vid_dir)
+                vid_metadata['\xa9cmt'] = [""]    # tags
+                vid_metadata['\xa9ART'] = [""]    # author
+                for i in vid_metadata:
+                    vid_metadata_text = vid_metadata_text + i +" : "+vid_metadata[i][0] +"\n"
+                self.tagdisplay.setText(vid_metadata_text)
+                
 
     def dir_up(self):
         current_path = self.dir_entry.text()
@@ -84,6 +108,14 @@ class Test(QtWidgets.QMainWindow):
     def tag_set(self):
         dialog = SetTagDialog(self)
         dialog.exec()
+        self.load_tags()
+
+    def author_selected(self):
+        global vid_metadata
+        pass
+
+    def tag_selected(self):
+        global vid_metadata
         pass
 
 # tag setting
@@ -128,9 +160,9 @@ class SetTagDialog(QtWidgets.QDialog):
 
 
 if __name__ == '__main__':
+    path = os.path.splitext("C:/Users/zhaoxc/Videos/2025-02-13_17-05-20.mp4")
+    print(path[1])
     app = QtWidgets.QApplication(sys.argv)
     window = Test()
     window.show()
     sys.exit(app.exec())
-
-""".\ffmpeg -i D:\Vid_classification_tool\2025-02-13_17-05-20.mkv -metadata Author="kimjongun" -metadata Tags="porn" -codec copy D:\Vid_classification_tool\2025-02-13_17-05-20_tagged.mkv"""

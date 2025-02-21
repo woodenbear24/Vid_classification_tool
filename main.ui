@@ -48,6 +48,12 @@
       </property>
       <item row="0" column="0">
        <widget class="QLineEdit" name="dir_entry">
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="cursorMoveStyle">
          <enum>Qt::CursorMoveStyle::LogicalMoveStyle</enum>
         </property>
@@ -75,6 +81,12 @@
       </item>
       <item row="1" column="0" colspan="3">
        <widget class="QListWidget" name="filelist">
+        <property name="maximumSize">
+         <size>
+          <width>200</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="layoutDirection">
          <enum>Qt::LayoutDirection::LeftToRight</enum>
         </property>
@@ -95,12 +107,15 @@
      </layout>
     </item>
     <item>
+     <widget class="QGraphicsView" name="graphicsView"/>
+    </item>
+    <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="QTextBrowser" name="tagdisplay">
         <property name="maximumSize">
          <size>
-          <width>16777215</width>
+          <width>300</width>
           <height>400</height>
          </size>
         </property>
@@ -150,6 +165,12 @@
         </property>
         <item>
          <widget class="QListWidget" name="author_list">
+          <property name="maximumSize">
+           <size>
+            <width>150</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="frameShape">
            <enum>QFrame::Shape::NoFrame</enum>
           </property>
@@ -163,6 +184,12 @@
         </item>
         <item>
          <widget class="QListWidget" name="tag_list">
+          <property name="maximumSize">
+           <size>
+            <width>150</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="frameShape">
            <enum>QFrame::Shape::NoFrame</enum>
           </property>
