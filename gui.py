@@ -1,4 +1,4 @@
-import sys, os, mutagen
+import sys, os
 from mutagen.mp4 import MP4, MP4Tags
 from tag_manager import *
 from PyQt6 import QtWidgets, uic
@@ -13,7 +13,7 @@ class Test(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi('main.ui', self)
-        #Signal
+        # Signal
         self.loaddir_button = self.findChild(QtWidgets.QToolButton,'loaddir_button') 
         self.dir_entry = self.findChild(QtWidgets.QLineEdit, 'dir_entry')
         self.fileList = self.findChild(QtWidgets.QListWidget, 'filelist') 
@@ -23,19 +23,15 @@ class Test(QtWidgets.QMainWindow):
         self.reload_tags_button = self.findChild(QtWidgets.QToolButton, "reload_tags_button")
         self.tag_config_button = self.findChild(QtWidgets.QToolButton, "tag_config_button")
         self.write_tag = self.findChild(QtWidgets.QPushButton, 'write_tag')
-
-        #if self.LoadDir_button: 
+        # Connecting
         self.loaddir_button.clicked.connect(self.on_button_clicked)
-        # if self.Dir_entry: 
         self.dir_entry.textChanged.connect(self.update_file_list) 
-        # if self.FileList: # Ensure FileList object exists
         self.fileList.itemDoubleClicked.connect(self.handle_file_list_click) 
-        # if self.up_dir_button:
         self.up_dir_button.clicked.connect(self.dir_up)
         self.reload_tags_button.clicked.connect(self.load_tags)
         self.tag_config_button.clicked.connect(self.tag_set)
-        # self.author_list.itemDoubleClicked.connect()
-        # self.tag_list.itemDoubleClicked.connect()
+        self.author_list.itemDoubleClicked.connect(self.author_selected)
+        self.tag_list.itemDoubleClicked.connect(self.tag_selected)
         # self.write_tag.clicked.connect()
 
 
@@ -160,8 +156,6 @@ class SetTagDialog(QtWidgets.QDialog):
 
 
 if __name__ == '__main__':
-    path = os.path.splitext("C:/Users/zhaoxc/Videos/2025-02-13_17-05-20.mp4")
-    print(path[1])
     app = QtWidgets.QApplication(sys.argv)
     window = Test()
     window.show()
