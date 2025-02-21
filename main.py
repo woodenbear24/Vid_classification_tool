@@ -1,9 +1,8 @@
 import sys, os
-from mutagen.mp4 import MP4, MP4Tags
+from mutagen.mp4 import MP4
 from tag_manager import *
-from PyQt6 import QtWidgets, uic
-from PyQt6.QtWidgets import  QFileDialog, QDialog
-
+from dialog import *
+from PyQt6 import QtWidgets, QtMultimedia, uic
 
 vid= None
 vid_metadata = {}
@@ -35,7 +34,6 @@ class Test(QtWidgets.QMainWindow):
         self.tag_list.itemClicked.connect(self.tag_selected)
         self.write_tag.clicked.connect(self.tag_mod)
         self.clear_tag_button.clicked.connect(self.tag_clear)
-
         self.load_tags()
 
         
@@ -44,7 +42,7 @@ class Test(QtWidgets.QMainWindow):
         print(f"test_triggered")
 
     def on_button_clicked(self):
-        Dir = QFileDialog.getExistingDirectory(self, "Select Dir", "")
+        Dir = QtWidgets.QFileDialog.getExistingDirectory(self, "Select Dir", "")
         print(f"Selected:{Dir}")
         if Dir:
             self.dir_entry.setText(Dir)
