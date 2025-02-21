@@ -5,7 +5,7 @@ from PyQt6 import QtWidgets, uic
 from PyQt6.QtWidgets import  QFileDialog, QDialog
 
 
-vid_dir = ""
+vid= None
 vid_metadata = {}
 
 # main window
@@ -23,6 +23,7 @@ class Test(QtWidgets.QMainWindow):
         self.reload_tags_button = self.findChild(QtWidgets.QToolButton, "reload_tags_button")
         self.tag_config_button = self.findChild(QtWidgets.QToolButton, "tag_config_button")
         self.write_tag = self.findChild(QtWidgets.QPushButton, 'write_tag')
+        self.clear_tag_button = self.findChild(QtWidgets.QToolButton, 'clear_tag_button')
         # Connecting
         self.loaddir_button.clicked.connect(self.on_button_clicked)
         self.dir_entry.textChanged.connect(self.update_file_list) 
@@ -30,10 +31,10 @@ class Test(QtWidgets.QMainWindow):
         self.up_dir_button.clicked.connect(self.dir_up)
         self.reload_tags_button.clicked.connect(self.load_tags)
         self.tag_config_button.clicked.connect(self.tag_set)
-        self.author_list.itemDoubleClicked.connect(self.author_selected)
-        self.tag_list.itemDoubleClicked.connect(self.tag_selected)
-        # self.write_tag.clicked.connect()
-
+        self.author_list.itemClicked.connect(self.author_selected)
+        self.tag_list.itemClicked.connect(self.tag_selected)
+        self.write_tag.clicked.connect(self.tag_mod)
+        self.clear_tag_button.clicked.connect(self.tag_clear)
 
         self.load_tags()
 
@@ -72,15 +73,17 @@ class Test(QtWidgets.QMainWindow):
                 self.dir_entry.setText(full_item_path) 
                 print(f"Jumping to:{full_item_path}")
             elif (split_path[-1]=='.mp4'):
-                global vid_dir
+                global vid
                 global vid_metadata
-                vid_dir = full_item_path
-                print(f"Selected mp4:{vid_dir}")
-                vid_metadata=MP4(vid_dir)
-                if vid_metadata['\xa9cmt']==[]:
-                    vid_metadata['\xa9cmt'] = [""]    # tags
-                if vid_metadata['\xa9ART']==[]:
-                    vid_metadata['\xa9ART'] = [""]    # author
+                vid = full_item_path
+                print(f"Selected mp4:{vid}")
+                vid_metadata=MP4(vid)
+                print (vid_metadata)
+                if not '\xa9cmt' in vid_metadata:
+                    vid_metadata['\xa9cmt'] = []    # tags
+                if not '\xa9ART' in  vid_metadata:
+                    vid_metadata['\xa9ART'] = []    # author
+                print(vid_metadata)
                 self.tag_display()
                 
 
@@ -108,27 +111,58 @@ class Test(QtWidgets.QMainWindow):
     def author_selected(self, item):
         global vid_metadata
         author = item.text()
-        if author in vid_metadata['\xa9cmt']:
-            vid_metadata['\xa9cmt'].remove(author)
-        else:
-            vid_metadata['\xa9cmt'].append(author)
-        self.tag_display()
+        try:
+            if author in vid_metadata['\xa9ART']:
+                vid_metadata['\xa9ART'].remove(author)
+            else:
+                vid_metadata['\xa9ART'].append(author)
+            self.tag_display()
+        except Exception:
+            print(f"Err:{Exception}")
 
     def tag_selected(self, item):
         global vid_metadata
         tag = item.text()
-        if tag in vid_metadata['\xa9cmt']:
-            vid_metadata['\xa9cmt'].remove(tag)
-        else:
-            vid_metadata['\xa9cmt'].append(tag)
-        self.tag_display()
+        try:
+            vid_metadata['\xa9cmt']
+            if tag in vid_metadata['\xa9cmt']:
+                vid_metadata['\xa9cmt'].remove(tag)
+            else:
+                vid_metadata['\xa9cmt'].append(tag)
+            self.tag_display()
+        except Exception:
+            print(f"Err:{Exception}")
 
     def tag_display(self):
         global vid_metadata
         vid_metadata_text = ""
-        for i in vid_metadata:
-            vid_metadata_text = vid_metadata_text + i +" : "+vid_metadata[i][0] +"\n"
-        self.tagdisplay.setText(vid_metadata_text)
+        try:
+            for key,value in vid_metadata.items():
+                if key != '\xa9too':
+                    value_str = ", ".join(map(str, value))
+                    vid_metadata_text += f"{key}: {value_str}\n"
+            print(vid_metadata_text)
+            vid_metadata_text = vid_metadata_text.replace("\xa9ART","Author").replace("\xa9cmt","Tag")
+            print(vid_metadata_text)
+            self.tagdisplay.setText(vid_metadata_text)
+        except:pass
+
+    def tag_mod(self):
+        global vid_metadata
+        try:
+            vid_metadata.save()
+            print("Tag edit Successful")
+        except Exception:
+            print(f"Err editing tag:{Exception}")
+
+    def tag_clear(self):
+        global vid_metadata
+        try:
+            vid_metadata['\xa9ART']=[]
+            vid_metadata['\xa9cmt']=[]
+            self.tag_display()
+        except Exception:
+            print(f"Err:{Exception}")
 
 
 # tag setting
