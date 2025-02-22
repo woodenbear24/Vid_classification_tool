@@ -10,14 +10,14 @@ class SetTagDialog(QtWidgets.QDialog):
 
         loader = QtUiTools.QUiLoader()
         self.ui = loader.load(ui_file, self)
-        print(ui_file)
+        print(self.ui)
         ui_file.close()        
 
         self.buttonBox = self.findChild(QtWidgets.QDialogButtonBox, "buttonBox")
         self.author_list = self.findChild(QtWidgets.QTextEdit, "author_list")
         self.tag_list = self.findChild(QtWidgets.QTextEdit, "tag_list")
         self.buttonBox.accepted.connect(self.on_accepted)
-        self.buttonBox.accepted.connect(self.on_rejected)
+        self.buttonBox.rejected.connect(self.on_rejected)
         
         self.load()
 
@@ -47,3 +47,9 @@ class SetTagDialog(QtWidgets.QDialog):
             tags_text += i + "\n"
         self.author_list.setText(authors_text)
         self.tag_list.setText(tags_text)
+
+if __name__ == '__main__':
+    app = QtWidgets.QApplication([])
+    window = SetTagDialog()
+    window.show()
+    app.exec()

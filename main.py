@@ -1,10 +1,10 @@
-import sys, os
+import os
 from mutagen.mp4 import MP4
 from tag_manager import *
 from dialog import SetTagDialog
 from PySide6 import QtWidgets, QtMultimediaWidgets, QtCore, QtUiTools
 from PySide6.QtMultimedia import QMediaPlayer, QVideoSink
-
+ 
 vid= None
 vid_metadata = {}
 
@@ -25,7 +25,7 @@ class Test(QtWidgets.QMainWindow):
         self.loaddir_button = self.findChild(QtWidgets.QToolButton,'loaddir_button') 
         self.dir_entry = self.findChild(QtWidgets.QLineEdit, 'dir_entry')
         self.fileList = self.findChild(QtWidgets.QListWidget, 'filelist') 
-        self.video_widget = self.findChild(QtMultimediaWidgets.QVideoWidget, "video_widget")
+        # self.video_widget = self.findChild(QtMultimediaWidgets.QVideoWidget, "video_widget")
         self.play_button = self.findChild(QtWidgets.QToolButton, "play_button")
         self.up_dir_button = self.findChild(QtWidgets.QToolButton, 'up_dir_button')
         self.author_list = self.findChild(QtWidgets.QListWidget, 'author_list')
@@ -122,8 +122,7 @@ class Test(QtWidgets.QMainWindow):
         print("tags loaded")
     
     def tag_set(self):
-        dialog = SetTagDialog()
-        dialog.exec()
+        SetTagDialog().exec()
         self.load_tags()
 
     def author_selected(self, item):
@@ -156,9 +155,8 @@ class Test(QtWidgets.QMainWindow):
         vid_metadata_text = ""
         try:
             for key,value in vid_metadata.items():
-                if key != '\xa9too':
-                    value_str = ", ".join(map(str, value))
-                    vid_metadata_text += f"{key}: {value_str}\n"
+                value_str = ", ".join(map(str, value))
+                vid_metadata_text += f"{key}: {value_str}\n"
             print(vid_metadata_text)
             vid_metadata_text = vid_metadata_text.replace("\xa9ART","Author").replace("\xa9cmt","Tag")
             print(vid_metadata_text)
@@ -184,7 +182,7 @@ class Test(QtWidgets.QMainWindow):
 
 
 if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication([])
     window = Test()
     window.show()
-    sys.exit(app.exec())
+    app.exec()
