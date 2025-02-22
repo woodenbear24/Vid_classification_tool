@@ -10,7 +10,6 @@ class SetTagDialog(QtWidgets.QDialog):
 
         loader = QtUiTools.QUiLoader()
         self.ui = loader.load(ui_file, self)
-        print(self.ui)
         ui_file.close()        
 
         self.buttonBox = self.findChild(QtWidgets.QDialogButtonBox, "buttonBox")

@@ -5,8 +5,7 @@ from dialog import SetTagDialog
 from PySide6 import QtWidgets, QtMultimediaWidgets, QtCore, QtUiTools
 from PySide6.QtMultimedia import QMediaPlayer, QVideoSink
  
-vid= None
-vid_metadata = {}
+vid_metadata = None
 
 # main window
 class Test(QtWidgets.QMainWindow):
@@ -18,7 +17,6 @@ class Test(QtWidgets.QMainWindow):
 
         loader = QtUiTools.QUiLoader()
         self.ui = loader.load(ui_file, self)
-        print(ui_file)
         ui_file.close()   
 
         # UI
@@ -91,7 +89,6 @@ class Test(QtWidgets.QMainWindow):
                 self.dir_entry.setText(full_item_path) 
                 print(f"Jumping to:{full_item_path}")
             elif (split_path[-1]=='.mp4'):
-                global vid
                 global vid_metadata
                 vid = full_item_path
                 print(f"Selected mp4:{vid}")
