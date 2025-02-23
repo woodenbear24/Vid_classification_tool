@@ -13,7 +13,7 @@ class Test(QtWidgets.QMainWindow):
         super().__init__()
 
         # UI Load
-        ui_file = QtCore.QFile("main.ui")
+        ui_file = QtCore.QFile("main_2.ui")
 
         loader = QtUiTools.QUiLoader()
         self.ui = loader.load(ui_file, self)
