@@ -8,12 +8,12 @@ from PySide6.QtMultimedia import QMediaPlayer, QVideoSink
 vid_metadata = None
 
 # main window
-class Test(QtWidgets.QMainWindow):
+class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
         # UI Load
-        ui_file = QtCore.QFile("main_2.ui")
+        ui_file = QtCore.QFile("main.ui")
 
         loader = QtUiTools.QUiLoader()
         self.ui = loader.load(ui_file, self)
@@ -180,6 +180,6 @@ class Test(QtWidgets.QMainWindow):
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
-    window = Test()
+    window = MainWindow()
     window.show()
     app.exec()
