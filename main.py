@@ -13,10 +13,13 @@ class MainWindow(QtWidgets.QMainWindow):
         super().__init__()
 
         # UI Load
-        ui_file = QtCore.QFile("main.ui")
         loader = QtUiTools.QUiLoader()
-        self.ui = loader.load(ui_file, self)
-        ui_file.close()   
+        ui_file = QtCore.QFile("main_2.ui")
+
+        if ui_file.open(QtCore.QFile.ReadOnly):
+            self.window = loader.load(ui_file, self)
+            self.setCentralWidget(self.window.centralWidget())  # <- THIS LINE
+            ui_file.close()  
 
         # UI
         self.loaddir_button = self.findChild(QtWidgets.QToolButton,'loaddir_button') 
