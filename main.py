@@ -2,7 +2,7 @@ import os
 from mutagen.mp4 import MP4
 from tag_manager import *
 from dialog import SetTagDialog
-from PySide6 import QtWidgets, QtMultimediaWidgets, QtCore, QtUiTools
+from PySide6 import QtWidgets, QtMultimediaWidgets, QtCore, QtUiTools, QtGui
 from PySide6.QtMultimedia import QMediaPlayer, QVideoSink
  
 vid_metadata = None
@@ -11,14 +11,16 @@ vid_metadata = None
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
-
+        print(QtWidgets.QStyleFactory.keys())
         # UI Load
         loader = QtUiTools.QUiLoader()
-        ui_file = QtCore.QFile("main_2.ui")
-
+        ui_file = QtCore.QFile("main.ui")
+        icon_file = QtGui.QIcon(os.path.join('resources', 'wrench.png'))
         if ui_file.open(QtCore.QFile.ReadOnly):
             self.window = loader.load(ui_file, self)
             self.setCentralWidget(self.window.centralWidget())  # <- THIS LINE
+            self.setWindowTitle('Vid_Classification_tool')
+            self.setWindowIcon(icon_file)
             ui_file.close()  
 
         # UI

@@ -34,8 +34,8 @@
   <property name="modal">
    <bool>false</bool>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+  <layout class="QHBoxLayout" name="horizontalLayout_2">
+   <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <property name="leftMargin">
       <number>3</number>

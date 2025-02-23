@@ -24,7 +24,7 @@ class MyDialog(QDialog):
 
         if ui_file.open(QFile.ReadOnly):
             self.window = loader.load(ui_file, self)
-            # self.setCentralWidget(self.window.centralWidget())  # <- THIS LINE
+            # self.(self.window.verticalLayout())  # <- THIS LINE
             ui_file.close()
 
 
@@ -32,6 +32,6 @@ if __name__ == "__main__":
     app = QApplication([])
     window = MyMainWindow()
     window.show()
-    window0 = MyDialog()
-    window0.show()
+    # window0 = MyDialog()
+    # window0.show()
     app.exec()
