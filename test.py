@@ -6,7 +6,8 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        ui_file = QFile("main_2.ui").open(QFile.ReadOnly)
+        ui_file = QFile("main_2.ui")
+        ui_file.open(QFile.ReadOnly)
         self.ui = QUiLoader().load(ui_file, self)
         ui_file.close()
 
