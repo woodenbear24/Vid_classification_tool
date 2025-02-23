@@ -14,7 +14,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # UI Load
         ui_file = QtCore.QFile("main.ui")
-
         loader = QtUiTools.QUiLoader()
         self.ui = loader.load(ui_file, self)
         ui_file.close()   
