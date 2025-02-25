@@ -8,6 +8,7 @@ from PySide6.QtMultimediaWidgets import QVideoWidget
 
 vid_metadata = None
 
+
 # main window
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -48,6 +49,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.tag_list = self.findChild(QtWidgets.QListWidget, 'tag_list')
 
         self.tag_display_box = self.findChild(QtWidgets.QTextBrowser, 'tag_display_box')
+        self.video_slider = self.findChild(QtWidgets.QSlider, 'video_slider')
 
 
         self.reload_tags_button = self.findChild(QtWidgets.QToolButton, "reload_tags_button")
@@ -137,10 +139,27 @@ class MainWindow(QtWidgets.QMainWindow):
         self.mediaPlayer.play()
         global vid_metadata
         print(f"Absolute path: {os.path.abspath(path)}")
-        print(f"Codec information: {vid_metadata.info}")
         print(f"Media player state: {self.mediaPlayer.mediaStatus()}")
         print(f"Media player error: {self.mediaPlayer.error()}")
 
+        # Get video duration and set slider range
+        duration = self.mediaPlayer.duration()
+        self.video_slider.setRange(0, duration)
+
+        # Create a timer to update the slider position
+        self.timer = QtCore.QTimer(self)
+        self.timer.setInterval(100)  # Update every 100 milliseconds
+        self.timer.timeout.connect(self.update_slider)
+        self.timer.start()
+
+        self.video_slider.sliderMoved.connect(self.set_position)
+
+    def update_slider(self):
+        position = self.mediaPlayer.position()
+        self.video_slider.setValue(position)
+
+    def set_position(self, position):
+        self.mediaPlayer.setPosition(position)
 
     def play_video(self):
         if self.mediaPlayer.isPlaying():
@@ -219,6 +238,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 if __name__ == '__main__':
+    os.environ['QT_MULTIMEDIA_PREFERRED_PLUGINS'] = 'windowsmediafoundation'
     app = QtWidgets.QApplication([])
     window = MainWindow()
     window.show()
