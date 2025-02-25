@@ -2,8 +2,8 @@ import os
 from mutagen.mp4 import MP4
 from tag_manager import *
 from dialog import SetTagDialog
-from PySide6 import QtWidgets, QtMultimediaWidgets, QtCore, QtUiTools, QtGui
-from PySide6.QtMultimedia import QMediaPlayer
+from PySide6 import QtWidgets, QtCore, QtUiTools, QtGui
+from PySide6.QtMultimedia import QMediaPlayer, QVideoSink
 from PySide6.QtMultimediaWidgets import QVideoWidget
 
 vid_metadata = None
@@ -28,7 +28,20 @@ class MainWindow(QtWidgets.QMainWindow):
         self.loaddir_button = self.findChild(QtWidgets.QToolButton,'loaddir_button') 
         self.dir_entry = self.findChild(QtWidgets.QLineEdit, 'dir_entry')
         self.fileList = self.findChild(QtWidgets.QListWidget, 'filelist') 
-        self.video_widget = self.findChild(QtMultimediaWidgets.QVideoWidget, "video_widget")
+
+        mid_grid = self.findChild(QtWidgets.QGridLayout, "mid_grid")
+        # self.video_widget = self.findChild(QVideoWidget, "video_widget")
+
+        # if self.video_widget is None:
+        print(999)
+        self.video_widget = QVideoWidget()
+        self.video_widget.setMinimumSize(300, 300)
+        print(444)
+        if mid_grid:
+            mid_grid.addWidget(self.video_widget, 0, 0, 1, 2) # add to mid_grid
+        else:
+            print("Error: mid_grid layout not found in main.ui") 
+        
         self.play_button = self.findChild(QtWidgets.QToolButton, "play_button")
         self.up_dir_button = self.findChild(QtWidgets.QToolButton, 'up_dir_button')
         self.author_list = self.findChild(QtWidgets.QListWidget, 'author_list')
@@ -36,13 +49,18 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.tag_display_box = self.findChild(QtWidgets.QTextBrowser, 'tag_display_box')
 
+
         self.reload_tags_button = self.findChild(QtWidgets.QToolButton, "reload_tags_button")
         self.tag_config_button = self.findChild(QtWidgets.QToolButton, "tag_config_button")
         self.write_tag = self.findChild(QtWidgets.QPushButton, 'write_tag')
         self.clear_tag_button = self.findChild(QtWidgets.QToolButton, 'clear_tag_button')
-        # Media
-        self.mediaPlayer = QMediaPlayer()
+        # Media Player
+        print(111)
+        self.mediaPlayer = QMediaPlayer(self)
+        print(222)
         self.mediaPlayer.setVideoOutput(self.video_widget)
+        print(333)
+
 
         # Signal Connecting
         self.play_button.clicked.connect(self.play_video)
@@ -61,7 +79,6 @@ class MainWindow(QtWidgets.QMainWindow):
         # initialization
         self.load_tags()
 
-        
 
     def test_func(self):
         print(f"test_triggered")
@@ -115,9 +132,15 @@ class MainWindow(QtWidgets.QMainWindow):
         print(f"Back to:{up_dir}")
         self.dir_entry.setText(up_dir)
 
-    def set_video(self, filename):
-        print("vid triggered")
-        self.mediaPlayer.setSource(QtCore.QUrl.fromLocalFile(filename))
+    def set_video(self, path):
+        self.mediaPlayer.setSource(QtCore.QUrl.fromLocalFile(path))
+        self.mediaPlayer.play()
+        global vid_metadata
+        print(f"Absolute path: {os.path.abspath(path)}")
+        print(f"Codec information: {vid_metadata.info}")
+        print(f"Media player state: {self.mediaPlayer.mediaStatus()}")
+        print(f"Media player error: {self.mediaPlayer.error()}")
+
 
     def play_video(self):
         if self.mediaPlayer.isPlaying():
