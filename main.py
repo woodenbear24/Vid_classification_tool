@@ -3,8 +3,9 @@ from mutagen.mp4 import MP4
 from tag_manager import *
 from dialog import SetTagDialog
 from PySide6 import QtWidgets, QtMultimediaWidgets, QtCore, QtUiTools, QtGui
-from PySide6.QtMultimedia import QMediaPlayer, QVideoSink
- 
+from PySide6.QtMultimedia import QMediaPlayer
+from PySide6.QtMultimediaWidgets import QVideoWidget
+
 vid_metadata = None
 
 # main window
@@ -18,7 +19,7 @@ class MainWindow(QtWidgets.QMainWindow):
         icon_file = QtGui.QIcon(os.path.join('resources', 'wrench.png'))
         if ui_file.open(QtCore.QFile.ReadOnly):
             self.window = loader.load(ui_file, self)
-            self.setCentralWidget(self.window.centralWidget())  # <- THIS LINE
+            self.setCentralWidget(self.window.centralWidget())
             self.setWindowTitle('Vid_Classification_tool')
             self.setWindowIcon(icon_file)
             ui_file.close()  
@@ -27,7 +28,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.loaddir_button = self.findChild(QtWidgets.QToolButton,'loaddir_button') 
         self.dir_entry = self.findChild(QtWidgets.QLineEdit, 'dir_entry')
         self.fileList = self.findChild(QtWidgets.QListWidget, 'filelist') 
-        # self.video_widget = self.findChild(QtMultimediaWidgets.QVideoWidget, "video_widget")
+        self.video_widget = self.findChild(QtMultimediaWidgets.QVideoWidget, "video_widget")
         self.play_button = self.findChild(QtWidgets.QToolButton, "play_button")
         self.up_dir_button = self.findChild(QtWidgets.QToolButton, 'up_dir_button')
         self.author_list = self.findChild(QtWidgets.QListWidget, 'author_list')
@@ -40,12 +41,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.write_tag = self.findChild(QtWidgets.QPushButton, 'write_tag')
         self.clear_tag_button = self.findChild(QtWidgets.QToolButton, 'clear_tag_button')
         # Media
-
+        self.mediaPlayer = QMediaPlayer()
+        self.mediaPlayer.setVideoOutput(self.video_widget)
 
         # Signal Connecting
+        self.play_button.clicked.connect(self.play_video)
         self.loaddir_button.clicked.connect(self.on_button_clicked)
         self.dir_entry.textChanged.connect(self.update_file_list) 
-        self.fileList.itemDoubleClicked.connect(self.handle_file_list_click) 
+        self.fileList.itemClicked.connect(self.handle_file_list_click) 
         self.up_dir_button.clicked.connect(self.dir_up)
         self.reload_tags_button.clicked.connect(self.load_tags)
         self.tag_config_button.clicked.connect(self.tag_set)
@@ -104,13 +107,23 @@ class MainWindow(QtWidgets.QMainWindow):
                     vid_metadata['\xa9ART'] = []    # author
                 print(vid_metadata)
                 self.tag_display()
-                
+                self.set_video(vid)
 
     def dir_up(self):
         current_path = self.dir_entry.text()
         up_dir = os.path.dirname(current_path)
         print(f"Back to:{up_dir}")
         self.dir_entry.setText(up_dir)
+
+    def set_video(self, filename):
+        print("vid triggered")
+        self.mediaPlayer.setSource(QtCore.QUrl.fromLocalFile(filename))
+
+    def play_video(self):
+        if self.mediaPlayer.isPlaying():
+            self.mediaPlayer.pause()
+        else:
+            self.mediaPlayer.play()
     
     def load_tags(self):
         json = tag_load()

@@ -53,6 +53,12 @@
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QTextEdit" name="author_list">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>200</height>
+          </size>
+         </property>
          <property name="frameShape">
           <enum>QFrame::Shape::NoFrame</enum>
          </property>
@@ -60,6 +66,12 @@
        </item>
        <item>
         <widget class="QTextEdit" name="tag_list">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>200</height>
+          </size>
+         </property>
          <property name="frameShape">
           <enum>QFrame::Shape::NoFrame</enum>
          </property>

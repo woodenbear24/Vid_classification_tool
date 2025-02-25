@@ -1,5 +1,6 @@
-from PySide6 import QtWidgets, QtCore, QtUiTools
+from PySide6 import QtWidgets, QtCore, QtUiTools, QtGui
 from tag_manager import *
+import os
 
 # tag setting
 class SetTagDialog(QtWidgets.QDialog):
@@ -9,8 +10,13 @@ class SetTagDialog(QtWidgets.QDialog):
         ui_file = QtCore.QFile("dialog.ui")
 
         loader = QtUiTools.QUiLoader()
-        self.ui = loader.load(ui_file, self)
-        ui_file.close()        
+        icon_file = QtGui.QIcon(os.path.join('resources', 'wrench.png'))
+        if ui_file.open(QtCore.QFile.ReadOnly): 
+            self.ui = loader.load(ui_file, self)
+            self.setLayout(self.ui.layout())
+            self.setWindowTitle('Tag Setting')
+            self.setWindowIcon(icon_file)
+        ui_file.close()
 
         self.buttonBox = self.findChild(QtWidgets.QDialogButtonBox, "buttonBox")
         self.author_list = self.findChild(QtWidgets.QTextEdit, "author_list")
